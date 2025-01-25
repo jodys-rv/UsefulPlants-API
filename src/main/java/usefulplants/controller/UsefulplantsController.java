@@ -1,5 +1,7 @@
 package usefulplants.controller;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -10,8 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import lombok.extern.slf4j.Slf4j;
 import usefulplants.controller.dto.BenefitData;
 import usefulplants.controller.dto.CommonNameData;
@@ -56,7 +60,7 @@ public class UsefulplantsController {
   }
 
   /**
-   * finds a plant by its ID
+   * Finds a plant by its ID.
    * 
    * @param plantId
    * @return plantData
@@ -68,7 +72,7 @@ public class UsefulplantsController {
   }
 
   /**
-   * Adds a CommonName to a Plant in the database
+   * Adds a CommonName to a Plant in the database.
    * 
    * @param plantId
    * @param name
@@ -86,7 +90,7 @@ public class UsefulplantsController {
   }
 
   /**
-   * searches for a Plant by its common name.
+   * Searches for a Plant by its common name.
    * 
    * @param name
    * @return
@@ -114,7 +118,7 @@ public class UsefulplantsController {
   }
 
   /**
-   * retrieves all the Ecosystems in the database.
+   * Retrieves all the Ecosystems in the database.
    * 
    * @return List of Ecosystems
    */
@@ -126,7 +130,7 @@ public class UsefulplantsController {
   }
 
   /**
-   * retrieves an Ecosystem by its ID
+   * Retrieves an Ecosystem by its ID.
    * 
    * @param ecosystemId
    * @return EcosystemData
@@ -137,7 +141,7 @@ public class UsefulplantsController {
   }
 
   /**
-   * retrieves all the plants in a given ecosystem
+   * Retrieves all the plants in a given ecosystem.
    * 
    * @param ecosystemId
    * @return List of PlantDatas
@@ -163,8 +167,32 @@ public class UsefulplantsController {
     return service.addPlantToEcosystem(ecosystemId, plantId);
   }
 
+  /**
+   * Retrieves all plants that have a given benefit.
+   * 
+   * @param benefitId
+   * @return List of plantDatas.
+   */
   @GetMapping("/benefit/{benefitId}")
   public List<PlantData> getAllPlantsWithBenefit(@PathVariable Long benefitId) {
     return service.GetAllPlantsWithBenefit(benefitId);
+  }
+
+  @PutMapping("/plant/{plantId}/picture")
+  public Map<String,String> uploadPicture(@PathVariable Long plantId, @RequestParam(name = "file") MultipartFile file) {
+    Map<String, String> response = new HashMap<>();
+    byte[] picture;
+    try {
+      picture = service.addPictureToPlant(plantId, file.getBytes(), file.getContentType());
+      if(picture != null && picture.length > 0) {
+        response.put("size:", Long.toString(picture.length));
+        response.put("file type:", file.getContentType());
+        return response;
+      }
+      response.put("error!", "failed to upload your picture.");
+    } catch (IOException e) {
+      response.put("error!", e.getMessage());
+    }
+    return response;
   }
 }

@@ -19,7 +19,6 @@ import usefulplants.entity.CommonName;
 import usefulplants.entity.Ecosystem;
 import usefulplants.entity.Plant;
 
-
 @Service
 public class PlantService {
 
@@ -37,10 +36,10 @@ public class PlantService {
   }
 
   /**
-   * saves a plant to the database.
+   * Saves a plant to the database.
    * 
-   * @param plantData
-   * @return PlantData
+   * @param PlantData passed in from the client
+   * @return PlantData returned from the database.
    */
   @Transactional(readOnly = false)
   public PlantData savePlant(PlantData plantData) {
@@ -51,7 +50,7 @@ public class PlantService {
   }
 
   /**
-   * copies the fields from a PlantData to a Plant
+   * Copies the fields from a PlantData to a Plant.
    * 
    * @param plant
    * @param plantData
@@ -64,10 +63,10 @@ public class PlantService {
   }
 
   /**
-   * if the plantId is null or 0, creates a new plant. Otherwise, calls retrievePlantById
+   * If the plantId is null or 0, creates a new plant. Otherwise, calls retrievePlantById().
    * 
    * @param plantId
-   * @return
+   * @return either a Plant from the database, or a new plant.
    */
   private Plant findOrCreatePlant(Long plantId) {
     Plant plant;
@@ -80,7 +79,7 @@ public class PlantService {
   }
 
   /**
-   * calls retrievePlantById
+   * Calls retrievePlantById().
    * 
    * @param plantId
    * @return PlantData
@@ -92,14 +91,15 @@ public class PlantService {
   }
 
   /**
-   * searches the database for a plant; if it does not exist throws an exception.
+   * Searches the database for a plant; if it does not exist throws an exception.
    * 
    * @param plantId
    * @return
    */
   public Plant retrievePlantById(Long plantId) {
     return plantDao.findById(plantId)
-        .orElseThrow(() -> new NoSuchElementException("There is no plant number " + plantId));
+        .orElseThrow(() -> new NoSuchElementException("There is no plant number " + plantId
+            + ". Select a plant from the database or choose 'add a plant.'"));
   }
 
   /**
@@ -135,7 +135,7 @@ public class PlantService {
   }
 
   /**
-   * sets the fields in a commonName
+   * Sets the fields in a commonName.
    * 
    * @param name
    * @param commonName
@@ -148,8 +148,8 @@ public class PlantService {
   }
 
   /**
-   * if the ID of the given commonName is null or 0, creates a new commonName. Otherwise searches by
-   * ID for the commonName.
+   * If the ID of the given commonName is null or 0, creates a new commonName. Otherwise retrieves
+   * the commonName by its ID.
    * 
    * @param commonNameId
    * @return CommonName
@@ -165,7 +165,7 @@ public class PlantService {
   }
 
   /**
-   * retrieves the commonNmae by its ID if it exists. Otherwise throws exception.
+   * Retrieves the commonNmae by its ID if it exists. Otherwise throws exception.
    * 
    * @param commonNameId
    * @return CommonName
@@ -176,7 +176,7 @@ public class PlantService {
   }
 
   /**
-   * calls lookUpName
+   * Calls lookUpName().
    * 
    * @param name
    * @return PlantData
@@ -188,18 +188,19 @@ public class PlantService {
   }
 
   /**
-   * finds a common name by name; otherwise throws exception.
+   * Finds a common name by name; otherwise throws exception.
    * 
    * @param name
    * @return CommonName
    */
   private CommonName lookUpName(String name) {
     return commonNameDao.findByName(name).orElseThrow(
-        () -> new NoSuchElementException("can't find anything called " + name + ", sorry."));
+        () -> new NoSuchElementException("Can't find anything called " + name + ", sorry."));
   }
 
   /**
    * Creates benefit and adds it to the given Plant
+   * 
    * @param plantId
    * @param benefitData
    * @return PlantData
@@ -218,7 +219,7 @@ public class PlantService {
   }
 
   /**
-   * creates benefit
+   * Creates benefit.
    * 
    * @param benefitData
    * @param plant
@@ -231,9 +232,8 @@ public class PlantService {
   }
 
   /**
-   * copies the fields from a BenefitData to a benefit. (hang on, don't I have a toBenefit over in
-   * PlantData? And now that I'm looking at this method, I'm a little confused by it. I'd better
-   * take another look at it.
+   * Copies the fields from an existing BenefitData to an existing Benefit. Does not create a new
+   * benefit object.
    * 
    * @param benefit
    * @param benefitData
@@ -248,7 +248,7 @@ public class PlantService {
   }
 
   /**
-   * If the ID of a benefit is null or 0, creates a new benefit. otherwise calls findBenefitById
+   * If the ID of a benefit is null or 0, creates a new benefit. otherwise calls findBenefitById().
    * 
    * @param benefitId
    * @return Benefit
@@ -264,19 +264,18 @@ public class PlantService {
   }
 
   /**
-   * finds a benefit in the database if in exists, otherwise throws exception
+   * Finds a benefit in the database if in exists, otherwise throws exception.
    * 
    * @param benefitId
    * @return Benefit
    */
   private Benefit findBenefitById(Long benefitId) {
     return benefitDao.findById(benefitId)
-        .orElseThrow(() -> new NoSuchElementException("no such benefit."));
+        .orElseThrow(() -> new NoSuchElementException("That benefit is not in the database."));
   }
 
   /**
-   * I love this little bit of code! I copied it here from one of the other projects. I've got to
-   * see if I can use it in the other methods that produce lists.
+   * Retrieves all ecosystems from the database.
    * 
    * @return List of EcosystemDatas.
    */
@@ -291,10 +290,10 @@ public class PlantService {
   }
 
   /**
-   * calls retrieveEcosystemByID
+   * Calls retrieveEcosystemByID().
    * 
    * @param ecosystemId
-   * @return
+   * @return EcosystemData
    */
   @Transactional(readOnly = true)
   public EcosystemData findEcosystemById(Long ecosystemId) {
@@ -303,7 +302,7 @@ public class PlantService {
   }
 
   /**
-   * finds an ecosystem by ID if it exists, otherwise throws exception
+   * Finds an ecosystem by ID if it exists, otherwise throws exception.
    * 
    * @param ecosystemId
    * @return Ecosystem
@@ -314,7 +313,7 @@ public class PlantService {
   }
 
   /**
-   * retrieves a List all plants in a given ecosystem
+   * Retrieves a List all plants in a given ecosystem.
    * 
    * @param ecosystemId
    * @return List of Plants
@@ -325,26 +324,38 @@ public class PlantService {
     return ecosystem.getPlants().stream().map(PlantData::new).toList();
   }
 
+  /**
+   * Adds an existing plant to an existing ecosystem.
+   * 
+   * @param ecosystemId
+   * @param plantId
+   * @return ecosystemData
+   */
   @Transactional(readOnly = false)
   public EcosystemData addPlantToEcosystem(Long ecosystemId, Long plantId) {
     Plant plant = retrievePlantById(plantId);
     Ecosystem ecosystem = retrieveEcosystemById(ecosystemId);
 
     saveEcosystemToPlant(ecosystem, plant);
-    
+
     Set<Plant> plants = ecosystem.getPlants();
     plants.add(plant);
-    
+
     return new EcosystemData(ecosystemDao.save(ecosystem));
   }
 
+  /**
+   * Adds an existing ecosystem to an existing plant.
+   * 
+   * @param ecosystem
+   * @param plant
+   */
   private void saveEcosystemToPlant(Ecosystem ecosystem, Plant plant) {
     Set<Ecosystem> ecosystems = plant.getEcosystems();
     ecosystems.add(ecosystem);
     plant.setEcosystems(ecosystems);
     plantDao.save(plant);
-
-}
+  }
 
   /**
    * Deletes a Plant from the database.
@@ -361,7 +372,18 @@ public class PlantService {
   public List<PlantData> GetAllPlantsWithBenefit(Long benefitId) {
     Benefit benefit = findBenefitById(benefitId);
     return benefit.getPlants().stream().map(PlantData::new).toList();
-    
+  }
+
+  public byte[] addPictureToPlant(Long plantId, byte[] bytes, String contentType) {
+    Plant plant = retrievePlantById(plantId);
+    if(plant != null) {
+      plant.setPicture(bytes);
+      Plant result = plantDao.save(plant);
+      if(result != null) {
+        return result.getPicture();
+      }
+    }
+    return null;
   }
 
 }

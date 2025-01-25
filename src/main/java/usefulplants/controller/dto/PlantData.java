@@ -40,7 +40,7 @@ public class PlantData {
   }
 
   /**
-   * copies the data from a plantData to a new Plant object
+   * copies the data from a plantData to a new Plant object.
    * 
    * @param plantData
    * @return Plant

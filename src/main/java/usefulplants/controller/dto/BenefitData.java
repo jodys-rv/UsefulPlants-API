@@ -16,6 +16,7 @@ public class BenefitData {
     this.benefitName = benefit.getBenefitName();
   }
 
+  // I tried taking the toBenefit method out, but it broke my benefitDao somehow.
   public Benefit toBenefit() {
     Benefit benefit = new Benefit();
     benefit.setBenefitId(benefitId);
